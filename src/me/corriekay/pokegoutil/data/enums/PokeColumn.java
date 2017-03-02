@@ -13,9 +13,6 @@ import com.pokegoapi.exceptions.NoSuchItemException;
 import com.pokegoapi.google.common.geometry.S2CellId;
 import com.pokegoapi.main.PokemonMeta;
 
-import POGOProtos.Enums.PokemonIdOuterClass;
-import POGOProtos.Enums.PokemonMoveOuterClass.PokemonMove;
-import POGOProtos.Enums.PokemonTypeOuterClass.PokemonType;
 import me.corriekay.pokegoutil.utils.AutoIncrementer;
 import me.corriekay.pokegoutil.utils.ConfigKey;
 import me.corriekay.pokegoutil.utils.ConfigNew;
@@ -28,6 +25,10 @@ import me.corriekay.pokegoutil.utils.pokemon.PokemonCalculationUtils;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonPerformanceCache;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonUtils;
 import me.corriekay.pokegoutil.utils.windows.renderer.CellRendererHelper;
+
+import POGOProtos.Enums.PokemonIdOuterClass;
+import POGOProtos.Enums.PokemonMoveOuterClass.PokemonMove;
+import POGOProtos.Enums.PokemonTypeOuterClass.PokemonType;
 
 /**
  * A class that holds data relevant for each column.
@@ -279,7 +280,7 @@ public enum PokeColumn {
     GYM("Gym", ColumnType.STRING) {
         @Override
         public Object get(final Pokemon p) {
-            return (p.isDeployed()) ? YES : "";
+            return p.isDeployed() ? p.getDeployedFortId().substring(0,6) : p.isFainted() ? "KO" : p.isInjured() ? String.format("%03d", p.getMaxStamina()-p.getStamina()) : "";
         }
     },
     DUEL_ABILITY_RATING("Duel Ability Rating", ColumnType.PERCENTAGE) {

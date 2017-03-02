@@ -15,10 +15,11 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.exceptions.hash.HashException;
 import com.pokegoapi.main.PokemonMeta;
 
-import POGOProtos.Networking.Responses.NicknamePokemonResponseOuterClass.NicknamePokemonResponse;
 import me.corriekay.pokegoutil.data.enums.PokeColumn;
 import me.corriekay.pokegoutil.utils.Utilities;
 import me.corriekay.pokegoutil.utils.helpers.UnicodeHelper;
+
+import POGOProtos.Networking.Responses.NicknamePokemonResponseOuterClass.NicknamePokemonResponse;
 
 public class PokeHandler {
 
@@ -163,6 +164,12 @@ public class PokeHandler {
                 return PokeColumn.CP_EVOLVED.get(p).toString();
             }
         },
+        POTIONS("Potions") {
+            @Override
+            public String get(final Pokemon p) {
+                return String.format("%02d", (p.getMaxStamina() + 18) / 20);
+            }
+        },
         HP("Hit Points") {
             @Override
             public String get(final Pokemon p) {
@@ -172,7 +179,7 @@ public class PokeHandler {
         LEVEL("Pokémon Level") {
             @Override
             public String get(final Pokemon p) {
-                return PokeColumn.LEVEL.get(p).toString();
+                return String.format("%02.0f", PokeColumn.LEVEL.get(p));
             }
         },
         IV_RATING("IV Rating in two digits (XX for 100%) [2]") {
