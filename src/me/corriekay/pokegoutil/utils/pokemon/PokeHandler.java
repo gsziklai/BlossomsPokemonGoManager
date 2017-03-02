@@ -164,16 +164,22 @@ public class PokeHandler {
                 return PokeColumn.CP_EVOLVED.get(p).toString();
             }
         },
-        POTIONS("Potions") {
+        CPPR("CP prestiged") {
             @Override
             public String get(final Pokemon p) {
-                return String.format("%02d", (p.getMaxStamina() + 18) / 20);
+                return String.format("%02d", (p.getCp() + 49) / 50);
             }
         },
         HP("Hit Points") {
             @Override
             public String get(final Pokemon p) {
                 return PokeColumn.HP.get(p).toString();
+            }
+        },
+        POTIONS("Potions") {
+            @Override
+            public String get(final Pokemon p) {
+                return String.format("%02d", (p.getMaxStamina() + 18) / 20);
             }
         },
         LEVEL("Pokémon Level") {

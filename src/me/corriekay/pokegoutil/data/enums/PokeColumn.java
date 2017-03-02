@@ -22,6 +22,7 @@ import me.corriekay.pokegoutil.utils.helpers.CollectionHelper;
 import me.corriekay.pokegoutil.utils.helpers.DateHelper;
 import me.corriekay.pokegoutil.utils.helpers.LocationHelper;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonCalculationUtils;
+import me.corriekay.pokegoutil.utils.pokemon.PokemonCalculations;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonPerformanceCache;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonUtils;
 import me.corriekay.pokegoutil.utils.windows.renderer.CellRendererHelper;
@@ -132,6 +133,12 @@ public enum PokeColumn {
         @Override
         public Object get(final Pokemon p) {
             return PokemonCalculationUtils.dpsForMove(p, false);
+        }
+    },
+    MS_1("MS 1", ColumnType.INT) {
+        @Override
+        public Object get(final Pokemon p) {
+            return PokemonCalculations.msForMove(p, true);
         }
     },
     MOVETYPE_1("Movetype 1", ColumnType.STRING) {
