@@ -25,6 +25,7 @@ import me.corriekay.pokegoutil.utils.pokemon.PokemonCalculationUtils;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonCalculations;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonPerformanceCache;
 import me.corriekay.pokegoutil.utils.pokemon.PokemonUtils;
+import me.corriekay.pokegoutil.utils.pokemon.Pokemons;
 import me.corriekay.pokegoutil.utils.windows.renderer.CellRendererHelper;
 
 import POGOProtos.Enums.PokemonIdOuterClass;
@@ -67,7 +68,7 @@ public enum PokeColumn {
             return PokemonUtils.getLocalPokeName(p);
         }
     },
-    IV_RATING("IV %", ColumnType.PERCENTAGE) {
+    IV_RATING("IV%", ColumnType.PERCENTAGE) {
         @Override
         public Object get(final Pokemon p) {
             return PokemonCalculationUtils.ivRating(p);
@@ -91,7 +92,7 @@ public enum PokeColumn {
             return p.getIndividualDefense();
         }
     },
-    IV_STAMINA("Stam", ColumnType.INT, CellRendererHelper.IV) {
+    IV_STAMINA("Sta", ColumnType.INT, CellRendererHelper.IV) {
         @Override
         public Object get(final Pokemon p) {
             return p.getIndividualStamina();
@@ -163,7 +164,7 @@ public enum PokeColumn {
             return p.getMaxStamina();
         }
     },
-    EVOLVABLE_COUNT("Evolvable", ColumnType.NULLABLE_INT) {
+    EVOLVABLE_COUNT("Evolve", ColumnType.NULLABLE_INT) {
         @Override
         public Object get(final Pokemon p) {
             if (p.getCandiesToEvolve() > 1) {
@@ -189,7 +190,7 @@ public enum PokeColumn {
             }
         }
     },
-    CANDIES("Candies", ColumnType.INT) {
+    CANDIES("Candy", ColumnType.INT) {
         @Override
         public Object get(final Pokemon p) {
             return p.getCandy();
@@ -205,13 +206,13 @@ public enum PokeColumn {
             }
         }
     },
-    STARDUST_TO_POWERUP("Stardust", ColumnType.INT) {
+    STARDUST_TO_POWERUP("Dust", ColumnType.INT) {
         @Override
         public Object get(final Pokemon p) {
             return p.getStardustCostsForPowerup();
         }
     },
-    MAX_CP_CUR("Max CP (Cur)", ColumnType.INT) {
+    MAX_CP_CUR("MaxCP(Cur)", ColumnType.INT) {
         @Override
         public Object get(final Pokemon p) {
             try {
@@ -221,6 +222,7 @@ public enum PokeColumn {
             }
         }
     },
+    /*
     MAX_CP_40("Max CP (40)", ColumnType.INT) {
         @Override
         public Object get(final Pokemon p) {
@@ -230,15 +232,15 @@ public enum PokeColumn {
                 return -1;
             }
         }
-    },
-    MAX_CP_EVOLVED_CUR("Max CP Evolved (Cur)", ColumnType.INT) {
+    },*/
+    MAX_CP_EVOLVED_CUR("MaxCP^(C)", ColumnType.INT) {
         @Override
         public Object get(final Pokemon p) {
             final List<PokemonIdOuterClass.PokemonId> highest = Evolutions.getHighest(p.getPokemonId());
             final PokemonIdOuterClass.PokemonId highestUpgradedFamily = highest.get(0);
             return p.getMaxCpFullEvolveAndPowerupForPlayer(highestUpgradedFamily);
         }
-    },
+    },/*
     MAX_CP_EVOLVED_40("Max CP Evolved (40)", ColumnType.INT) {
         @Override
         public Object get(final Pokemon p) {
@@ -246,8 +248,16 @@ public enum PokeColumn {
             final PokemonIdOuterClass.PokemonId highestUpgradedFamily = highest.get(0);
             return p.getCpFullEvolveAndPowerup(highestUpgradedFamily);
         }
+    },*/
+    CP_NEXT("CP+", ColumnType.NULLABLE_INT) {
+        @Override
+        public Object get(final Pokemon p) {
+            final PokemonIdOuterClass.PokemonId next = Pokemons.getNextEvolution(p.getPokemonId());
+            return next == null ? StringLiterals.NO_VALUE_SIGN : p.getCpAfterEvolve(next);
+        }
     },
-    CP_EVOLVED("CP Evolved", ColumnType.NULLABLE_INT) {
+
+    CP_EVOLVED("CP^", ColumnType.NULLABLE_INT) {
         @Override
         public Object get(final Pokemon p) {
             final List<PokemonIdOuterClass.PokemonId> highest = Evolutions.getHighest(p.getPokemonId());
@@ -266,6 +276,65 @@ public enum PokeColumn {
             }
         }
     },
+    HP_NEXT("HP+", ColumnType.NULLABLE_INT) {
+        @Override
+        public Object get(final Pokemon p) {
+            final PokemonIdOuterClass.PokemonId next = Pokemons.getNextEvolution(p.getPokemonId());
+            return next == null ? StringLiterals.NO_VALUE_SIGN : PokemonCalculations.getHp(next, p.getLevel(), p.getIndividualStamina());
+        }
+    },
+    HP_EVOLVED("HP^", ColumnType.NULLABLE_INT) {
+        @Override
+        public Object get(final Pokemon p) {
+            final List<PokemonIdOuterClass.PokemonId> highest = Evolutions.getHighest(p.getPokemonId());
+            final PokemonIdOuterClass.PokemonId highestUpgradedFamily = highest.get(0);
+            return highest.contains(p.getPokemonId()) ? StringLiterals.NO_VALUE_SIGN : PokemonCalculations.getHp(highestUpgradedFamily, p.getLevel(), p.getIndividualStamina());
+        }
+    },
+    GYM_PRESTIGE_EVOLVED("GP^", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            final List<PokemonIdOuterClass.PokemonId> highest = Evolutions.getHighest(p.getPokemonId());
+            final PokemonIdOuterClass.PokemonId highestUpgradedFamily = highest.get(0);
+            if (highest.contains(p.getPokemonId())) {
+                return  Utilities.percentage(PokemonCalculations.gymPrestige(p), PokemonPerformanceCache.getHighestStats().gymPrestige.value / 2);
+            }
+            return Utilities.percentage(PokemonCalculations.gymPrestige(highestUpgradedFamily,
+                Pokemons.getEvolvedPerfectMove1ForOffense(highestUpgradedFamily),
+                Pokemons.getEvolvedPerfectMove2ForOffense(highestUpgradedFamily), p.getIndividualAttack(), p.getIndividualDefense(), p.getIndividualStamina()),
+                    PokemonPerformanceCache.getHighestStats().gymPrestige.value / 2);
+        }
+    },
+    GYM_OFFENSE_EVOLVED("GO^", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            final List<PokemonIdOuterClass.PokemonId> highest = Evolutions.getHighest(p.getPokemonId());
+            final PokemonIdOuterClass.PokemonId highestUpgradedFamily = highest.get(0);
+            if (highest.contains(p.getPokemonId())) {
+                return  Utilities.percentage(PokemonCalculationUtils.gymOffense(p), PokemonPerformanceCache.getHighestStats().gymOffense.value);
+            }
+            return Utilities.percentage(PokemonCalculationUtils.gymOffense(highestUpgradedFamily,
+                Pokemons.getEvolvedPerfectMove1ForOffense(highestUpgradedFamily),
+                Pokemons.getEvolvedPerfectMove2ForOffense(highestUpgradedFamily), p.getIndividualAttack()),
+                    PokemonPerformanceCache.getHighestStats().gymOffense.value);
+        }
+    },
+    GYM_DEFENSE_EVOLVED("GD^", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            final List<PokemonIdOuterClass.PokemonId> highest = Evolutions.getHighest(p.getPokemonId());
+            final PokemonIdOuterClass.PokemonId highestUpgradedFamily = highest.get(0);
+            if (highest.contains(p.getPokemonId())) {
+                return  Utilities.percentage(PokemonCalculationUtils.gymDefense(p), PokemonPerformanceCache.getHighestStats().gymDefense.value);
+            }
+            return Utilities.percentage(PokemonCalculationUtils.gymDefense(highestUpgradedFamily,
+                Pokemons.getEvolvedPerfectMove1ForDefense(highestUpgradedFamily),
+                Pokemons.getEvolvedPerfectMove2ForDefense(highestUpgradedFamily),
+                    p.getIndividualAttack(), p.getIndividualDefense(), p.getIndividualStamina()),
+                    PokemonPerformanceCache.getHighestStats().gymDefense.value);
+        }
+    },
+
     CAUGHT_WITH("Caught With", ColumnType.STRING) {
         @Override
         public Object get(final Pokemon p) {
@@ -278,7 +347,7 @@ public enum PokeColumn {
             return DateHelper.toString(DateHelper.fromTimestamp(p.getCreationTimeMs()));
         }
     },
-    FAVORITE("Favorite", ColumnType.STRING) {
+    FAVORITE("Fav", ColumnType.STRING) {
         @Override
         public Object get(final Pokemon p) {
             return (p.isFavorite()) ? YES : "";
@@ -287,7 +356,25 @@ public enum PokeColumn {
     GYM("Gym", ColumnType.STRING) {
         @Override
         public Object get(final Pokemon p) {
-            return p.isDeployed() ? p.getDeployedFortId().substring(0,6) : p.isFainted() ? "KO" : p.isInjured() ? String.format("%03d", p.getMaxStamina()-p.getStamina()) : "";
+            return p.isDeployed() ? p.getDeployedFortId().substring(0,6) : p.isFainted() ? "KO" : p.isInjured() ? String.format("%03d", p.getStamina() - p.getMaxStamina()) : "";
+        }
+    },
+    MOVE_OFFENSE_RATING("MO%", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            return PokemonCalculations.weaveRating(p, false);
+        }
+    },
+    MOVE_DEFENSE_RATING("MD%", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            return PokemonCalculations.weaveRating(p, true);
+        }
+    },
+    PRESTIGE_RATING("P%", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            return PokemonCalculations.prestigeRating(p);
         }
     },
     DUEL_ABILITY_RATING("Duel Ability Rating", ColumnType.PERCENTAGE) {
@@ -300,6 +387,12 @@ public enum PokeColumn {
         @Override
         public Object get(final Pokemon p) {
             return Utilities.percentage(PokemonCalculationUtils.gymOffense(p), PokemonPerformanceCache.getStats(p.getPokemonId()).gymOffense.value);
+        }
+    },
+    GYM_PRESTIGE_RATING("GPR", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            return Utilities.percentage(PokemonCalculations.gymPrestige(p), PokemonPerformanceCache.getStats(p.getPokemonId()).gymPrestige.value);
         }
     },
     GYM_DEFENSE_RATING("Gym Defense Rating", ColumnType.PERCENTAGE) {
@@ -318,6 +411,12 @@ public enum PokeColumn {
         @Override
         public Object get(final Pokemon p) {
             return Utilities.percentage(PokemonCalculationUtils.gymOffense(p), PokemonPerformanceCache.getHighestStats().gymOffense.value);
+        }
+    },
+    GYM_PRESTIGE("GP", ColumnType.PERCENTAGE) {
+        @Override
+        public Object get(final Pokemon p) {
+            return Utilities.percentage(PokemonCalculations.gymPrestige(p), PokemonPerformanceCache.getHighestStats().gymPrestige.value / 2);
         }
     },
     GYM_DEFENSE("Gym Defense", ColumnType.PERCENTAGE) {

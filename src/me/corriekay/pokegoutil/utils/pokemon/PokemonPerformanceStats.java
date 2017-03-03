@@ -9,6 +9,7 @@ public final class PokemonPerformanceStats {
     public final PokemonId pokemonId;
     public final PokemonPerformance<Long> duelAbility;
     public final PokemonPerformance<Double> gymOffense;
+    public final PokemonPerformance<Double> gymPrestige;
     public final PokemonPerformance<Long> gymDefense;
 
     /**
@@ -23,10 +24,12 @@ public final class PokemonPerformanceStats {
     PokemonPerformanceStats(final PokemonId pokemonId,
                             final PokemonPerformance<Long> duelAbility,
                             final PokemonPerformance<Double> gymOffense,
+                            final PokemonPerformance<Double> gymPrestige,
                             final PokemonPerformance<Long> gymDefense) {
         this.pokemonId = pokemonId;
         this.duelAbility = duelAbility;
         this.gymOffense = gymOffense;
+        this.gymPrestige = gymPrestige;
         this.gymDefense = gymDefense;
     }
 }

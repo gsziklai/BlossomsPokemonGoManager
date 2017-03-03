@@ -23,6 +23,7 @@ public final class PokemonPerformanceCache {
 
         PokemonPerformance<Long> globalHighestDuelAbility = PokemonPerformance.DEFAULT_LONG;
         PokemonPerformance<Double> globalHighestGymOffense = PokemonPerformance.DEFAULT_DOUBLE;
+        PokemonPerformance<Double> globalHighestGymPrestige = PokemonPerformance.DEFAULT_DOUBLE;
         PokemonPerformance<Long> globalHighestGymDefense = PokemonPerformance.DEFAULT_LONG;
 
         for (final PokemonId pokemonId : PokemonId.values()) {
@@ -35,6 +36,7 @@ public final class PokemonPerformanceCache {
 
             PokemonPerformance<Long> highestDuelAbility = PokemonPerformance.DEFAULT_LONG;
             PokemonPerformance<Double> highestGymOffense = PokemonPerformance.DEFAULT_DOUBLE;
+            PokemonPerformance<Double> highestGymPrestige = PokemonPerformance.DEFAULT_DOUBLE;
             PokemonPerformance<Long> highestGymDefense = PokemonPerformance.DEFAULT_LONG;
             for (final PokemonMove move1 : settings.getQuickMovesList()) {
                 for (final PokemonMove move2 : settings.getCinematicMovesList()) {
@@ -46,13 +48,17 @@ public final class PokemonPerformanceCache {
                     if (gymOffense > highestGymOffense.value) {
                         highestGymOffense = new PokemonPerformance<>(pokemonId, gymOffense, move1, move2);
                     }
+                    final double gymPrestige = PokemonCalculations.gymPrestige(pokemonId, move1, move2, 0, PokemonUtils.MAX_IV, PokemonUtils.MAX_IV);
+                    if (gymPrestige > highestGymPrestige.value) {
+                        highestGymPrestige = new PokemonPerformance<>(pokemonId, gymPrestige, move1, move2);
+                    }
                     final long gymDefense = PokemonCalculationUtils.gymDefense(pokemonId, move1, move2, PokemonUtils.MAX_IV, PokemonUtils.MAX_IV, PokemonUtils.MAX_IV);
                     if (gymDefense > highestGymDefense.value) {
                         highestGymDefense = new PokemonPerformance<>(pokemonId, gymDefense, move1, move2);
                     }
                 }
             }
-            final PokemonPerformanceStats stats = new PokemonPerformanceStats(pokemonId, highestDuelAbility, highestGymOffense, highestGymDefense);
+            final PokemonPerformanceStats stats = new PokemonPerformanceStats(pokemonId, highestDuelAbility, highestGymOffense, highestGymPrestige, highestGymDefense);
 
             MAP.put(pokemonId, stats);
 
@@ -63,15 +69,19 @@ public final class PokemonPerformanceCache {
             if (stats.gymOffense.value > globalHighestGymOffense.value) {
                 globalHighestGymOffense = stats.gymOffense;
             }
+            if (stats.gymPrestige.value > globalHighestGymPrestige.value) {
+                globalHighestGymPrestige = stats.gymPrestige;
+            }
             if (stats.gymDefense.value > globalHighestGymDefense.value) {
                 globalHighestGymDefense = stats.gymDefense;
             }
         }
 
-        HIGHEST_STATS = new PokemonPerformanceStats(null, globalHighestDuelAbility, globalHighestGymOffense, globalHighestGymDefense);
+        HIGHEST_STATS = new PokemonPerformanceStats(null, globalHighestDuelAbility, globalHighestGymOffense, globalHighestGymPrestige, globalHighestGymDefense);
 
         System.out.println("Highest Duel Ability: " + globalHighestDuelAbility.toString());
         System.out.println("Highest Gym Offense: " + globalHighestGymOffense.toString());
+        System.out.println("Highest Gym Prestige: " + globalHighestGymPrestige.toString());
         System.out.println("Highest Gym Defense: " + globalHighestGymDefense.toString());
     }
 

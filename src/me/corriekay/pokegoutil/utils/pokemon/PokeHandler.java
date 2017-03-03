@@ -273,13 +273,13 @@ public class PokeHandler {
             public String get(final Pokemon p) {
                 return padPercentage((double) PokeColumn.GYM_DEFENSE_RATING.get(p));
             }
-        },
+        },/*
         MAX_CP("Maximum possible CP (with Trainer Level 40)") {
             @Override
             public String get(final Pokemon p) {
                 return PokeColumn.MAX_CP_40.get(p).toString();
             }
-        },
+        },*/
         MOVE_TYPE_1("Move 1 abbreviated (Ghost = Gh) [2]") {
             @Override
             public String get(final Pokemon p) {

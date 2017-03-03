@@ -5,14 +5,15 @@ import java.util.List;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.main.PokemonMeta;
 
-import POGOProtos.Enums.PokemonIdOuterClass.PokemonId;
-import POGOProtos.Enums.PokemonMoveOuterClass.PokemonMove;
-import POGOProtos.Settings.Master.MoveSettingsOuterClass.MoveSettings;
-import POGOProtos.Settings.Master.PokemonSettingsOuterClass.PokemonSettings;
-import POGOProtos.Settings.Master.Pokemon.StatsAttributesOuterClass.StatsAttributes;
 import me.corriekay.pokegoutil.utils.ConfigKey;
 import me.corriekay.pokegoutil.utils.ConfigNew;
 import me.corriekay.pokegoutil.utils.Utilities;
+
+import POGOProtos.Enums.PokemonIdOuterClass.PokemonId;
+import POGOProtos.Enums.PokemonMoveOuterClass.PokemonMove;
+import POGOProtos.Settings.Master.MoveSettingsOuterClass.MoveSettings;
+import POGOProtos.Settings.Master.Pokemon.StatsAttributesOuterClass.StatsAttributes;
+import POGOProtos.Settings.Master.PokemonSettingsOuterClass.PokemonSettings;
 
 /**
  * A Utility class providing several methods to calculate stats and values of Pokémon.
@@ -84,7 +85,7 @@ public final class PokemonCalculationUtils {
      * @param primary   If it should be calculated for the primary more or the secondary.
      * @return The clean dps.
      */
-    private static double dpsForMove(final PokemonId pokemonId, final PokemonMove move, final boolean primary) {
+    static double dpsForMove(final PokemonId pokemonId, final PokemonMove move, final boolean primary) {
         final MoveSettings moveMeta = PokemonMeta.getMoveSettings(move);
         final int moveDelay = primary ? 0 : MOVE2_CHARGE_DELAY_MS;
         double dps = (double) moveMeta.getPower() / (double) (moveMeta.getDurationMs() + moveDelay) * MILLISECONDS_FACTOR;
