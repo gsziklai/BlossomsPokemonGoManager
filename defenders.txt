@@ -1,0 +1,27 @@
+Blissey|Pound|Dazzling Gleam|99
+Blissey|Zen Headbutt|Dazzling Gleam|100
+Snorlax|Zen Headbutt|Hyper Beam|80
+Tyranitar|Iron Tail|Crunch|70
+Dragonite|Dragon Tail|Outrage|70
+Rhydon|Mud Slap|Stone Edge|70
+Gyarados|Dragon Tail|Hydro Pump|70
+Gyarados|Dragon Tail|Outrage|70
+Vaporeon|Water Gun|Aqua Tail|60
+Lapras|Frost Breath|Hydro Pump|60
+Donphan|Counter|Play Rough|55
+Espeon|Confusion|Psybeam|55
+Exeggutor|Confusion|Seed Bomb|55
+Ampharos|Volt Switch|Thunder|55
+Ampharos|Volt Switch|Zap Cannon|55
+Slowbro|Confusion|Psychic|55
+Slowbro|Confusion|Ice Beam|55
+Slowbro|Confusion|Water Pulse|55
+Sloking|Confusion|Blizzard|55
+Sloking|Confusion|Psychic|55
+Steelix|Iron Tail|Heavy Slam|55
+Cloyster|Ice Shard|Avalanche|45
+Cleffable|Zen Headbutt|Dazzling Gleam|45
+Cleffable|Charge Beam|Dazzling Gleam|45
+Umpreon|Snarl|Foul Play|45
+Umpreon|Snarl|Dark Pulse|45
+Hypno|Confusion|Future Sight|45
